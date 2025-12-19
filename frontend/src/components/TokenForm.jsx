@@ -26,7 +26,7 @@ function TokenForm({ setTokenData }) {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:4000/api/token", {
+      const res = await fetch("/api/token", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

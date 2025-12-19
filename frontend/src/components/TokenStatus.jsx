@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:4000", {
+const socket = io({
   withCredentials: true,
 });
 
@@ -16,7 +16,7 @@ function TokenStatus({ tokenData }) {
 
   /* ---------------- INITIAL LOAD ---------------- */
   useEffect(() => {
-    fetch("http://localhost:4000/api/status", {
+    fetch("/api/status", {
       credentials: "include",
     })
       .then((res) => res.json())
