@@ -11,6 +11,7 @@ const apiRoutes = require("./routes/api");
 const adminRoutes = require("./routes/admin");
 const errorHandler = require("./middlewares/errorHandler");
 const queue = require("./store/queueStore");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
@@ -18,6 +19,12 @@ const server = http.createServer(app);
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
+
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 
 app.use(
@@ -26,7 +33,6 @@ app.use(
         credentials: true,
     })
 );
-
 
 app.use(
     session({
@@ -44,7 +50,6 @@ app.use((req, res, next) => {
     res.locals.error = req.flash("error");
     next();
 });
-
 
 app.use("/api", apiRoutes);
 app.use("/admin", adminRoutes);
@@ -68,7 +73,6 @@ io.on("connection", (socket) => {
         tokens: queue.tokens,
     });
 });
-
 
 const PORT = process.env.PORT || 4000;
 
