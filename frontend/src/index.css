@@ -1,0 +1,308 @@
+.stylish-card {
+    background: rgba(10, 10, 30, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+    position: relative;
+    padding: 0;
+}
+
+.stylish-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+}
+
+@keyframes rotating-border {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.moving-border-shine::before {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: conic-gradient( transparent, #ffff00, #8400ff, /* Green */
+    transparent);
+    z-index: 0;
+    animation: rotating-border 4s linear infinite;
+    pointer-events: none;
+}
+
+.moving-border-shine .card-body {
+    position: relative;
+    z-index: 1;
+    background: rgba(10, 10, 30, 0.6);
+    border-radius: 20px;
+    margin: 1px;
+}
+
+@media (max-width: 768px) {
+    .stylish-card {
+        border-radius: 12px;
+        margin: 0 15px;
+    }
+    .stylish-card .display-1 {
+        font-size: 3rem !important;
+        letter-spacing: 4px !important;
+    }
+    .stylish-card .card-body {
+        padding: 2rem 1rem !important;
+    }
+    .stylish-card .badge {
+        font-size: 0.9rem;
+        min-width: 120px;
+        padding: 0.5rem 1rem;
+    }
+}
+
+.token-glow {
+    letter-spacing: 8px;
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+}
+
+.call-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.call-btn:hover {
+    background-color: #198754;
+    transform: scale(1.08);
+}
+
+.token-form-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.token-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 24px;
+    border-radius: 16px;
+    animation: cardEnter 0.6s ease;
+}
+
+@keyframes cardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.form-control {
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+    transform: scale(1.01);
+}
+
+.animated-error {
+    animation: shake 0.35s ease;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-4px);
+    }
+    50% {
+        transform: translateX(4px);
+    }
+    75% {
+        transform: translateX(-4px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+
+/* Error input border */
+
+.input-error {
+    border-color: #dc3545;
+}
+
+
+/* Button animation */
+
+.token-btn {
+    font-weight: 600;
+    padding: 12px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.token-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.token-btn:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.status-card {
+    animation: cardFadeUp 0.6s ease;
+}
+
+@keyframes cardFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* Token number glow */
+
+.status-card h1 {
+    animation: glowPulse 2s infinite alternate;
+}
+
+@keyframes glowPulse {
+    from {
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+    }
+    to {
+        text-shadow: 0 0 22px rgba(0, 255, 255, 1);
+    }
+}
+
+
+/* Status badge animation */
+
+.status-badge {
+    font-size: 18px;
+    letter-spacing: 1px;
+    animation: badgePop 0.4s ease;
+}
+
+@keyframes badgePop {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
+/* Being Served emphasis */
+
+.status-badge.text-success {
+    animation: pulseGreen 1.2s infinite;
+}
+
+@keyframes pulseGreen {
+    0% {
+        box-shadow: 0 0 0 rgba(25, 135, 84, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 18px rgba(25, 135, 84, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 0 rgba(25, 135, 84, 0);
+    }
+}
+
+
+/* Fade out before hiding */
+
+.fade-exit {
+    animation: fadeOut 0.5s ease forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.status-info-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.status-info-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+    .status-card h1 {
+        font-size: 64px;
+        letter-spacing: 4px;
+    }
+    .status-badge {
+        font-size: 14px;
+        padding: 8px 14px;
+    }
+    .card-body {
+        padding: 32px 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .row.g-3>div {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+.turn-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #880abd;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    animation: toastSlideUp 0.4s ease;
+    z-index: 9999;
+}
+
+@keyframes toastSlideUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
