@@ -28,7 +28,6 @@ app.use(
     })
 );
 
-
 app.use(
     session({
         secret: "queue-secret",
@@ -46,12 +45,10 @@ app.use((req, res, next) => {
     next();
 });
 
-
 app.use("/api", apiRoutes);
 app.use("/admin", adminRoutes);
 
-
-app.get("*", (req, res) => {
+app.use((req, res) => {
     if (req.path.startsWith("/api") || req.path.startsWith("/admin")) {
         return res.status(404).send("Not Found");
     }
@@ -79,7 +76,6 @@ io.on("connection", (socket) => {
         tokens: queue.tokens,
     });
 });
-
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => console.log(` Server running on port ${PORT}`));
