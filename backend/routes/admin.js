@@ -45,6 +45,7 @@ router.post("/next", async(req, res) => {
             io.emit("queue-update", {
                 nextTokenNo: null,
                 tokens: queue.tokens,
+                isFinished: queue.isFinished,
             });
 
             return res.redirect("/admin");
@@ -61,6 +62,7 @@ router.post("/next", async(req, res) => {
             nextTokenNo: upcoming ? upcoming.tokenNo : null,
             tokens: queue.tokens,
             reason: "next",
+            isFinished: queue.isFinished,
         });
 
         res.redirect("/admin");
@@ -82,6 +84,7 @@ router.post("/reset", (req, res) => {
         nextTokenNo: null,
         tokens: [],
         reason: "reset",
+        isFinished: queue.isFinished,
     });
 
     req.flash("success", "Queue reset successfully");
@@ -126,6 +129,7 @@ router.post("/delete/:tokenNo", (req, res) => {
         nextTokenNo: nextTokenNo,
         tokens: queue.tokens,
         reason: "delete",
+        isFinished: queue.isFinished,
     });
 
     res.json({ success: true });
@@ -133,13 +137,6 @@ router.post("/delete/:tokenNo", (req, res) => {
 
 router.get("/display", (req, res) => {
     res.render("display", { queue });
-});
-
-router.use((req, res, next) => {
-    if (req.query.key !== "admin123") {
-        return res.status(403).send("Access denied");
-    }
-    next();
 });
 
 module.exports = router;

@@ -15,11 +15,19 @@ router.post("/token", validateCustomer, (req, res) => {
         status: "waiting",
         createdAt: Date.now(),
     };
-
     queue.tokens.push(token);
-
-
     req.session.tokenNo = tokenNo;
+
+    queue.isFinished = false;
+
+    const io = req.app.get("io");
+    const upcoming = queue.tokens.find((t) => t.status === "waiting");
+    io.emit("queue-update", {
+        currentServing: queue.currentServing,
+        nextTokenNo: upcoming ? upcoming.tokenNo : null,
+        tokens: queue.tokens,
+        isFinished: queue.isFinished,
+    });
 
     res.json({
         tokenNo,

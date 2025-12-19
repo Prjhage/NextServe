@@ -110,12 +110,20 @@ document.addEventListener("DOMContentLoaded", () => {
 socket.on("queue-update", function(data) {
     const currentServing = data.currentServing;
     const tokens = data.tokens;
+    const isFinished = data.isFinished;
     tokens.forEach((t) => {
         //  ONLY when token becomes COMPLETED
         if (t.status === "completed") {
             incrementDailyCountOnce(t.tokenNo);
         }
     });
+
+    // ENABLE/DISABLE CALL NEXT BUTTON
+    const callNextBtn = document.getElementById("callNextBtn");
+    if (callNextBtn) {
+        callNextBtn.disabled = isFinished;
+        callNextBtn.innerText = isFinished ? "Queue Finished" : "Call Next";
+    }
 
     // UPDATE NOW SERVING
     const nowServingEl = document.getElementById("nowServing");

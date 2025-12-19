@@ -13,14 +13,55 @@ function TokenStatus({ tokenData }) {
   const [peopleAhead, setPeopleAhead] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [showTurnToast, setShowTurnToast] = useState(false);
+  // const [rejoin, setRejoin] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+  const [serverRestarted, setServerRestarted] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("deleted") === "true") {
+      setDeleted(true);
+      localStorage.removeItem("tokenData");
+    }
+  }, []);
 
   /* ---------------- INITIAL LOAD ---------------- */
   useEffect(() => {
     fetch("/api/status", {
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Server not available");
+        }
+        return res.json();
+      })
       .then((data) => {
+        const myToken = data.tokens.find((t) => t.tokenNo === tokenNo);
+
+        // Check if token is not found (server restarted or deleted)
+        if (!myToken) {
+          setServerRestarted(true);
+          localStorage.removeItem("tokenData");
+          localStorage.removeItem("token_called_" + tokenNo);
+          return;
+        }
+
+        // Check if token is completed
+        if (myToken.status === "completed") {
+          setCompleted(true);
+          localStorage.removeItem("tokenData");
+          localStorage.removeItem("token_called_" + tokenNo);
+          return;
+        }
+
+        // already completed approximation
+        if (data.currentServing !== null && tokenNo < data.currentServing) {
+          setCompleted(true);
+          localStorage.removeItem("tokenData");
+          localStorage.removeItem("token_called_" + tokenNo);
+          return;
+        }
+
         setNowServing(data.currentServing);
 
         const nextWaiting = data.tokens.find((t) => t.status === "waiting");
@@ -30,26 +71,33 @@ function TokenStatus({ tokenData }) {
           (t) => t.status === "waiting" && t.tokenNo < tokenNo
         ).length;
         setPeopleAhead(ahead);
-
-        // already completed
-        if (data.currentServing !== null && tokenNo < data.currentServing) {
-          setCompleted(true);
-          localStorage.removeItem("tokenData");
-        }
+      })
+      .catch((err) => {
+        setServerRestarted(true);
+        localStorage.removeItem("tokenData");
+        localStorage.removeItem("token_called_" + tokenNo);
       });
   }, [tokenNo]);
 
   /* ---------------- SOCKET UPDATES ---------------- */
   useEffect(() => {
-    socket.on("queue-update", ({ currentServing, tokens }) => {
+    socket.on("queue-update", ({ currentServing, tokens, reason }) => {
       const myToken = tokens.find((t) => t.tokenNo === tokenNo);
 
-      // COMPLETED → show thank you
+      // COMPLETED => show thank you
       if (
         (myToken && myToken.status === "completed") ||
         (currentServing === null && tokens.length === 0)
       ) {
         setCompleted(true);
+        localStorage.removeItem("tokenData");
+        return;
+      }
+
+      // DELETED => show rejoin message
+      if (reason === "delete" && !myToken) {
+        setDeleted(true);
+        localStorage.setItem("deleted", "true");
         localStorage.removeItem("tokenData");
         return;
       }
@@ -78,7 +126,14 @@ function TokenStatus({ tokenData }) {
       }
     });
 
-    return () => socket.off("queue-update");
+    socket.on("disconnect", () => {
+      setServerRestarted(true);
+    });
+
+    return () => {
+      socket.off("queue-update");
+      socket.off("disconnect");
+    };
   }, [tokenNo]);
 
   /* ---------------- AUTO HIDE TOAST ---------------- */
@@ -98,6 +153,28 @@ function TokenStatus({ tokenData }) {
       <div className="text-center mt-5 fade-exit">
         <h2 className="mb-3">Thank You for Visiting</h2>
         <p className="fs-5">Please come again</p>
+      </div>
+    );
+  }
+
+  /* ---------------- DELETED PAGE ---------------- */
+  if (deleted) {
+    return (
+      <div className="text-center mt-5 fade-exit">
+        <h2 className="mb-3">Admin Deleted You</h2>
+        <p className="fs-5">If you want to rejoin, please scan the QR code</p>
+      </div>
+    );
+  }
+
+  /* ---------------- SERVER RESTARTED PAGE ---------------- */
+  if (serverRestarted) {
+    return (
+      <div className="text-center mt-5 fade-exit">
+        <h2 className="mb-3">Server Restarted</h2>
+        <p className="fs-5">
+          Please refresh the page or scan the QR code to rejoin
+        </p>
       </div>
     );
   }
@@ -152,7 +229,7 @@ function TokenStatus({ tokenData }) {
         </div>
       </div>
 
-      {/* INFO CARDS */}
+    
       <div className="row text-center g-3">
         <div className="col-md-4">
           <div className="card p-3 status-info-card">

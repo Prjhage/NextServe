@@ -74,6 +74,7 @@ io.on("connection", (socket) => {
         currentServing: queue.currentServing,
         nextTokenNo: upcoming ? upcoming.tokenNo : null,
         tokens: queue.tokens,
+        isFinished: queue.isFinished,
     });
 });
 
