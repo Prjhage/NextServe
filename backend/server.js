@@ -6,33 +6,28 @@ const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
 const flash = require("connect-flash");
+const path = require("path");
 
 const apiRoutes = require("./routes/api");
 const adminRoutes = require("./routes/admin");
 const errorHandler = require("./middlewares/errorHandler");
 const queue = require("./store/queueStore");
-const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
 
 app.set("view engine", "ejs");
 app.use(express.json());
-app.use(express.static("public"));
+
 app.use(express.static(path.join(__dirname, "public")));
-
-
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
 
 app.use(
     cors({
-        origin: true, // allow same-origin
+        origin: true,
         credentials: true,
     })
 );
+
 
 app.use(
     session({
@@ -51,8 +46,19 @@ app.use((req, res, next) => {
     next();
 });
 
+
 app.use("/api", apiRoutes);
 app.use("/admin", adminRoutes);
+
+
+app.get("*", (req, res) => {
+    if (req.path.startsWith("/api") || req.path.startsWith("/admin")) {
+        return res.status(404).send("Not Found");
+    }
+
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 app.use(errorHandler);
 
 const io = new Server(server, {
@@ -74,6 +80,6 @@ io.on("connection", (socket) => {
     });
 });
 
-const PORT = process.env.PORT || 4000;
 
+const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => console.log(` Server running on port ${PORT}`));
