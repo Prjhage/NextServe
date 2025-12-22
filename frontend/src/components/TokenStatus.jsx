@@ -7,7 +7,6 @@ const socket = io({
 
 function TokenStatus({ tokenData }) {
   const { tokenNo } = tokenData;
-
   const [nowServing, setNowServing] = useState(null);
   const [nextTokenNo, setNextTokenNo] = useState(null);
   const [peopleAhead, setPeopleAhead] = useState(0);
@@ -38,9 +37,10 @@ function TokenStatus({ tokenData }) {
       .then((data) => {
         const myToken = data.tokens.find((t) => t.tokenNo === tokenNo);
 
-        // Check if token is not found (server restarted or deleted)
+        // Check if token is not found (deleted)
         if (!myToken) {
-          setServerRestarted(true);
+          setDeleted(true);
+          localStorage.setItem("deleted", "true");
           localStorage.removeItem("tokenData");
           localStorage.removeItem("token_called_" + tokenNo);
           return;
@@ -127,7 +127,9 @@ function TokenStatus({ tokenData }) {
     });
 
     socket.on("disconnect", () => {
-      setServerRestarted(true);
+      if (!deleted) {
+        setServerRestarted(true);
+      }
     });
 
     return () => {
@@ -229,7 +231,6 @@ function TokenStatus({ tokenData }) {
         </div>
       </div>
 
-    
       <div className="row text-center g-3">
         <div className="col-md-4">
           <div className="card p-3 status-info-card">

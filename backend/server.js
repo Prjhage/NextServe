@@ -7,7 +7,6 @@ const http = require("http");
 const { Server } = require("socket.io");
 const flash = require("connect-flash");
 const path = require("path");
-
 const apiRoutes = require("./routes/api");
 const adminRoutes = require("./routes/admin");
 const errorHandler = require("./middlewares/errorHandler");

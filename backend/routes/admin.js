@@ -94,7 +94,6 @@ router.post("/reset", (req, res) => {
 router.post("/delete/:tokenNo", (req, res) => {
     const io = req.app.get("io");
     const tokenNo = Number(req.params.tokenNo);
-
     queue.tokens = queue.tokens.filter((t) => t.tokenNo !== tokenNo);
 
     if (queue.currentServing === tokenNo) {

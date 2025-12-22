@@ -246,3 +246,96 @@
         transform: translateY(0);
     }
 }
+
+.app-card {
+    background: #ffffff;
+    border-radius: 18px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.app-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12);
+}
+
+.app-card-header {
+    background: linear-gradient(135deg, #0d6efd, #084298);
+    color: #fff;
+    border-radius: 18px 18px 0 0;
+    padding: 14px 16px;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.app-card-body {
+    padding: 20px;
+}
+
+.section-gap {
+    margin-bottom: 24px;
+}
+
+.stylish-card {
+    background: rgba(10, 10, 30, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+    position: relative;
+    padding: 0;
+}
+
+@keyframes rotating-border {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.moving-border-shine::before {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: conic-gradient(transparent, #ff00ea, #00d0ff, transparent);
+    z-index: 0;
+    animation: rotating-border 6s linear infinite;
+    pointer-events: none;
+}
+
+.moving-border-shine .card-content {
+    position: relative;
+    z-index: 1;
+    background: rgba(10, 10, 30, 0.7);
+    border-radius: 20px;
+    margin: 1px;
+    padding: 3rem;
+}
+
+.serving-number {
+    font-size: 10rem !important;
+    font-weight: 600;
+    color: #00ffaa;
+    text-shadow: 0 0 20px #ff0026, 0 0 30px rgba(0, 255, 170, 0.5);
+    letter-spacing: 5px;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    .serving-number {
+        font-size: 6rem !important;
+    }
+    .moving-border-shine .card-content {
+        padding: 2rem;
+    }
+}

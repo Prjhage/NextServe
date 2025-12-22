@@ -21,6 +21,8 @@ router.post("/token", validateCustomer, (req, res) => {
     queue.isFinished = false;
 
     const io = req.app.get("io");
+
+
     const upcoming = queue.tokens.find((t) => t.status === "waiting");
     io.emit("queue-update", {
         currentServing: queue.currentServing,
