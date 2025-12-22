@@ -41,6 +41,7 @@ function TokenForm({ setTokenData }) {
 
       setTokenData(data);
       localStorage.setItem("tokenData", JSON.stringify(data));
+      localStorage.removeItem("deleted");
     } catch (err) {
       showError(err.message);
     } finally {
